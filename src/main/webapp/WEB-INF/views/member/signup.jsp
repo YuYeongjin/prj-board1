@@ -38,7 +38,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="" class="form-label">
-                        닉네임 < 입력이 없으면 아이디와 동일합니다. >
+                        닉네임
                     </label>
                     <div class="input-group">
                         <input id="nickNameInput1" class="form-control" type="text" name="nickName">

@@ -29,7 +29,7 @@ public class MemberController {
             map.put("message","사용가능한 닉네임입니다.");
         }else{
             map.put("status", "exist");
-            map.put("message","사용불가능한 닉네임입니다.");
+            map.put("message","존재하는 닉네임입니다.");
         }
         return map;
     }
@@ -46,7 +46,7 @@ public class MemberController {
             map.put("message","사용가능한 이메일입니다.");
         }else{
             map.put("status", "exist");
-            map.put("message","사용불가능한 이메일입니다.");
+            map.put("message","존재하는 이메일입니다.");
         }
         return map;
     }
