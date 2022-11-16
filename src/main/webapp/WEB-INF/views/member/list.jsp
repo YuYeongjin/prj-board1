@@ -15,7 +15,7 @@
 
 </head>
 <body>
-<my:navBar active="memberList"></my:navBar>
+<my:navBar active="memberList"/>
 <div class="container-md">
     <div class="row">
         <div class="col">

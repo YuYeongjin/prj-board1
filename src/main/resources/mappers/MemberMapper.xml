@@ -14,7 +14,16 @@
         DELETE FROM Member WHERE id= #{id}
     </delete>
     <update id="update">
-        UPDATE Member SET password=#{password},email=#{email},nickName=#{nickName} WHERE id= #{id}
+        UPDATE Member
+        SET
+        <if test="password != null">
+            password=#{password},
+        </if>
+
+        email=#{email},
+        nickName=#{nickName}
+        WHERE
+        id= #{id}
 
     </update>
     <select id="selectById" resultType="com.prj1.domain.member.MemberDto">

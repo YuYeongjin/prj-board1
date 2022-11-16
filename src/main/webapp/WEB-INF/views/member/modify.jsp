@@ -7,13 +7,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Insert title here</title>
+  <title>회원정보 수정</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
-<my:navBar></my:navBar>
+<my:navBar/>
 
 <div class="container-md">
   <div class="row">
@@ -45,11 +45,13 @@
           </div>
           <div id="nickNameText1"class="form-text">닉네임 중복확인을 하세요.</div>
         </div>
+
+        <input type="checkbox" name="newPassword" value="true" id="newPasswordCheckbox1"> 암호 변경
         <div class="mb-3">
           <label for="" class="form-label">
-            암호
+            새 암호
           </label>
-          <input id="passwordInput1" class="form-control" type="text" value="${member.password }" name="password" >
+          <input disabled id="passwordInput1" class="form-control" type="text" name="password" >
           <div id="passwordText1" class="form-text"></div>
         </div>
 
@@ -57,7 +59,7 @@
           <label for="" class="form-label">
             암호 확인
           </label>
-          <input id="passwordInput2" class="form-control" type="text">
+          <input disabled id="passwordInput2" class="form-control" type="text">
         </div>
 
         <div class="mb-3">
@@ -86,7 +88,7 @@
         <input type="hidden" name="oldPassword">
       </form>
       <input disabled id="modifyButton1" class="btn btn-warning" type="submit" value="수정" data-bs-toggle="modal" data-bs-target="#modifyModal">
-      <input disabled id="deleteButton1" class="btn btn-danger" type="submit" value="탈퇴" data-bs-toggle="modal" data-bs-target="#removeModal">
+      <input id="deleteButton1" class="btn btn-danger" type="submit" value="탈퇴" data-bs-toggle="modal" data-bs-target="#removeModal">
     </div>
   </div>
 </div>
@@ -199,6 +201,18 @@
                 enableModifyButton();
               }
             });
+  });
+  <%-- 새 패스워드 입력 체크박스--%>
+  document.querySelector("#newPasswordCheckbox1").addEventListener("change",function(){
+    const pwInput1=document.querySelector("#passwordInput1");
+    const pwInput2=document.querySelector("#passwordInput2");
+    if(this.checked){
+      pwInput1.removeAttribute("disabled");
+      pwInput2.removeAttribute("disabled");
+    } else {
+      pwInput1.setAttribute("disabled", "disabled");
+      pwInput2.setAttribute("disabled", "disabled");
+    }
   });
 
 

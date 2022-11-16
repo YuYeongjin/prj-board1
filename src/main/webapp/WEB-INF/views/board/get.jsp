@@ -3,6 +3,7 @@
 <%@ page import="java.net.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,9 +26,12 @@
 				<c:url value="/board/modify" var="modifyLink">
 					<c:param name="id" value="${board.id }"></c:param>
 				</c:url>
-				<a class="btn btn-warning" href="${modifyLink }">
-					<i class="fa-solid fa-pen-to-square"></i>
-				</a>
+					<%--로그인 되어있는 경우에만 수정할 수 있도록--%>
+				<sec:authorize access="isAuthenticated()">
+					<a class="btn btn-warning" href="${modifyLink }">
+						<i class="fa-solid fa-pen-to-square"></i>
+					</a>
+				</sec:authorize>
 			</h1>
 
 			<div class="mb-3">
@@ -91,13 +95,23 @@
 	</div>
 	<div class="row">
 		<div class="col">
-			<%-- 댓글 작성 --%>
-			<input type="hidden" id="boardId" value="${board.id }">
 
-			<div class="input-group">
-				<input type="text" class="form-control" id="replyInput1">
-				<button class="btn btn-outline-secondary" id="replySendButton1"><i class="fa-solid fa-reply"></i></button>
-			</div>
+			<sec:authorize access="isAuthenticated()">
+				<%-- 댓글 작성 로그인 되어있는 경우에만 가능--%>
+				<input type="hidden" id="boardId" value="${board.id }">
+
+				<div class="input-group">
+					<input type="text" class="form-control" id="replyInput1">
+					<button class="btn btn-outline-secondary" id="replySendButton1"><i class="fa-solid fa-reply"></i></button>
+				</div>
+			</sec:authorize>
+			<sec:authorize access="!isAuthenticated()">
+				<div class="alert alert-light">
+					댓글입력은 로그인 후 가능합니다.
+				</div>
+
+			</sec:authorize>
+
 		</div>
 	</div>
 
