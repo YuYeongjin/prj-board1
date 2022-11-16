@@ -27,8 +27,6 @@ public class BoardController {
 
 	@GetMapping("register")
 	public void register() {
-		// 게시물 작성 view로 포워드
-		// /WEB-INF/views/board/register.jsp
 	}
 
 	@PostMapping("register")
@@ -36,19 +34,6 @@ public class BoardController {
 			BoardDto board,
 			MultipartFile[] files,
 			RedirectAttributes rttr) {
-		// * 파일업로드
-		// 1. web.xml
-		//    dispatcherServlet 설정에 multipart-config 추가
-		// 2. form 에 enctype="multipart/form-data" 속성 추가
-		// 3. Controller의 메소드 argument type : MultipartFile
-
-		// request param 수집/가공
-//		System.out.println(files.length);
-//		for (MultipartFile file : files) {
-//			System.out.println(file.getOriginalFilename());
-//		}
-
-		// business logic
 		int cnt = service.register(board, files);
 
 		if (cnt == 1) {
@@ -56,8 +41,6 @@ public class BoardController {
 		} else {
 			rttr.addFlashAttribute("message", "새 게시물이 등록되지 않았습니다.");
 		}
-
-		// /board/list로 redirect
 		return "redirect:/board/list";
 	}
 
@@ -68,79 +51,35 @@ public class BoardController {
 			@RequestParam(name = "q", defaultValue = "") String keyword,
 			PageInfo pageInfo,
 			Model model) {
-		// request param
-		// business logic
 		List<BoardDto> list = service.listBoard(page, type, keyword, pageInfo);
 
-		// add attribute
 		model.addAttribute("boardList", list);
-		// forward
 	}
-
-	// 위 list 메소드 파라미터 PageInfo에 일어나는 일을 풀어서 작성
-	/*
-	private void list2(
-			@RequestParam(name = "page", defaultValue = "1") int page,
-			HttpServletRequest request,
-			Model model) {
-		// request param
-		PageInfo pageInfo = new PageInfo();
-		pageInfo.setLastPageNumber(Integer.parseInt(request.getParameter("lastPageNumber")));
-		model.addAttribute("pageInfo", pageInfo);
-
-		// business logic
-		List<BoardDto> list = service.listBoard(page, pageInfo);
-
-		// add attribute
-		model.addAttribute("boardList", list);
-		// forward
-	}
-	*/
-
-
 	@GetMapping("get")
 	public void get(
-			// @RequestParam 생략 가능
 			@RequestParam(name = "id") int id,
 			Model model) {
-		// req param
-		// business logic (게시물 db에서 가져오기)
 		BoardDto board = service.get(id);
-		// add attribute
 		model.addAttribute("board", board);
-		// forward
-
 	}
-
 	@GetMapping("modify")
 	@PreAuthorize("@boardSecurity.checkWriter(authentication.name,#id)")
 	public void modify(int id, Model model) {
 		BoardDto board = service.get(id);
 		model.addAttribute("board", board);
-
 	}
-
 	@PostMapping("modify")
 	@PreAuthorize("@boardSecurity.checkWriter(authentication.name,#board.id)")
 	public String modify(BoardDto board,
 						 RedirectAttributes rttr,
 						 @RequestParam(name="removeFiles",required = false) List<String> removeFiles,
 						 @RequestParam("files") MultipartFile[] addFiles) {
-		// 지울 파일명 들어오는지 확인
 		if(removeFiles != null){
 			for(String name :removeFiles){
 				System.out.println(name);
 			}
 		}
-
 		int cnt = service.update(board,addFiles, removeFiles);
-
-//		if(files!=null){
-//			System.out.println("files.length: " + files.length);
-//			for (MultipartFile file : files) {
-//				System.out.println(file.getOriginalFilename());
-//			}
-//		}
 		if (cnt == 1) {
 			rttr.addFlashAttribute("message", board.getId() + "번 게시물이 수정되었습니다.");
 		} else {
@@ -162,11 +101,8 @@ public class BoardController {
 			// id번 게시물이 삭제되지 않았습니다.
 			rttr.addFlashAttribute("message", id + "번 게시물이 삭제되지 않았습니다.");
 		}
-
 		return "redirect:/board/list";
 	}
-
-
 }
 
 
