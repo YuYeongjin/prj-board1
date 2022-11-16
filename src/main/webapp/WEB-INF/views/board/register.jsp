@@ -2,6 +2,7 @@
 		 pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +35,7 @@
 
 				<div class="mb-3">
 					<label for="" class="form-label">작성자</label>
-					<input type="text" class="form-control" name="writer">
+					<input readonly type="text" class="form-control" name="writer" value="<sec:authentication property="name"/>">
 				</div>
 
 				<input class="btn btn-primary" type="submit" value="등록">
