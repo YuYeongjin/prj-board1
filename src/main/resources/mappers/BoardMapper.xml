@@ -4,6 +4,21 @@
 		"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.prj1.mapper.board.BoardMapper">
+	<select id="listByMemberId" resultType="com.prj1.domain.board.BoardDto">
+		SELECT id FROM Board WHERE writer=#{id}
+	</select>
+
+
+	<delete id="deleteLikeByMemberId">
+		DELETE FROM BoardLike WHERE memberId = #{id}
+	</delete>
+
+
+	<delete id="deleteLikeByBoardId">
+	DELETE FROM BoardLike WHERE boardId = #{id}
+
+	</delete>
+
 
 	<select id="countLikeByBoardId" resultType="int">
 		SELECT COUNT(*) FROM BoardLike WHERE boardId = #{boardId}
@@ -22,7 +37,6 @@
 	<!-- 좋아요 누른지 확인 -->
 	<select id="getLikeByBoardIdAndMemberId" resultType="int">
 		SELECT COUNT(*) FROM BoardLike WHERE boardId =#{boardId} AND memberId =#{memberId}
-
 	</select>
 
 	<delete id="deleteFileByName">
@@ -98,19 +112,19 @@
 
 	<select id="select" resultMap="boardMap">
 		SELECT
-		b.id,
-		b.title,
-		b.content,
-		b.writer,
-		b.inserted,
-		COUNT(l.memberId) countLike,
-		f.id fileId,
-		f.name fileName
+			b.id,
+			b.title,
+			b.content,
+			b.writer,
+			b.inserted,
+			(SELECT COUNT(*) FROM BoardLike WHERE boardId = b.id AND memberId = #{username}) liked,
+			(SELECT COUNT(*) FROM BoardLike WHERE boardId = b.id) countLike,
+			f.id fileId,
+			f.name fileName
 		FROM
-		Board b LEFT JOIN File f ON b.id = f.boardId
-				LEFT JOIN BoardLike l ON b.id = l.boardId
+			Board b LEFT JOIN File f ON b.id = f.boardId
 		WHERE
-		b.id = #{id}
+			b.id = #{id}
 	</select>
 
 	<resultMap type="com.prj1.domain.board.BoardDto" id="boardMap">
@@ -119,6 +133,7 @@
 		<result column="writer" property="writer"></result>
 		<result column="content" property="content"/>
 		<result column="inserted" property="inserted"/>
+		<result column="liked" property="liked"/>
 		<result column="countLike" property="countLike"/>
 		<collection property="fileName" ofType="string">
 			<result property="fileName" column="fileName"/>

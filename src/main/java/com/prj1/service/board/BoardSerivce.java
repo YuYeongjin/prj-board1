@@ -10,6 +10,7 @@ import com.prj1.mapper.board.BoardMapper;
 import com.prj1.mapper.board.ReplyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,10 +109,13 @@ public class BoardSerivce {
 
         return boardMapper.list(offset, records, type, "%" + keyword + "%");
     }
-
     public BoardDto get(int id) {
-        return boardMapper.select(id);
+        return get(id,null);
     }
+    public BoardDto get(int id, String username) {
+        return boardMapper.select(id, username);
+    }
+
 
     public int update(BoardDto board, MultipartFile[] addFiles, List<String> removeFiles) {
         int boardId = board.getId();
@@ -148,6 +152,7 @@ public class BoardSerivce {
     }
 
     public int remove(int id) {
+
         BoardDto board = boardMapper.select(id);
 
         List<String> fileNames = board.getFileName();
@@ -166,7 +171,8 @@ public class BoardSerivce {
         // 게시물의 댓글들 지우기
         replyMapper.deleteByBoardId(id);
 
-//		int a = 3 / 0; // runtime exception
+        // 좋아요 지우기
+        boardMapper.deleteLikeByBoardId(id);
 
         // 게시물 지우기
         return boardMapper.delete(id);

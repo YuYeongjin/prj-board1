@@ -38,10 +38,14 @@
 					</c:if>
 			</h1>
 				<h1>
-					<span id="likeButton">
-							<i disabled id="color" id="liked" class="fa-solid fa-heart"></i>
-							<i disabled id="unLiked" class="fa-solid fa-heart"></i>
-					</span>
+					<button <sec:authorize access="not isAuthenticated()"> disabled </sec:authorize> id="likeButton" class="btn btn-link">
+						<c:if test="${board.liked}">
+							<i  id="color" class="fa-solid fa-heart"></i>
+						</c:if>
+						<c:if test="${not board.liked}">
+							<i class="fa-solid fa-heart"></i>
+						</c:if>
+					</button>
 					<span id="likeCount">${board.countLike}</span>
 				</h1>
 			</div>

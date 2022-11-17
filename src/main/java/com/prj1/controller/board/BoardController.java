@@ -57,8 +57,12 @@ public class BoardController {
 	@GetMapping("get")
 	public void get(
 			@RequestParam(name = "id") int id,
-			Model model) {
-		BoardDto board = service.get(id);
+			Model model, Authentication authentication) {
+		String username=null;
+		if(authentication!=null){
+            username=authentication.getName();
+		}
+		BoardDto board = service.get(id, username);
 		model.addAttribute("board", board);
 	}
 	@GetMapping("modify")
@@ -90,7 +94,7 @@ public class BoardController {
 
 	@PostMapping("remove")
 	@PreAuthorize("@boardSecurity.checkWriter(authentication.name,#id)")
-	public String remove(int id, RedirectAttributes rttr) {
+	public String remove(int id,RedirectAttributes rttr) {
 		int cnt = service.remove(id);
 
 		if (cnt == 1) {

@@ -11,8 +11,6 @@ public interface BoardMapper {
 
 	List<BoardDto> list(int offset, int records, String type, String keyword);
 
-	BoardDto select(int id);
-
 	int update(BoardDto board);
 
 	int delete(int id);
@@ -32,6 +30,18 @@ public interface BoardMapper {
 	void insertLike(String boardId, String memberId);
 
 	int countLikeByBoardId(String boardId);
+
+	BoardDto select(int id, String username);
+
+	default BoardDto select(int id){
+		return select(id,null);
+	}
+
+	void deleteLikeByBoardId(int id);
+
+	void deleteLikeByMemberId(String id);
+
+	List<BoardDto> listByMemberId(String id);
 }
 
 
