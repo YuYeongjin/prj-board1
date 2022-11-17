@@ -6,16 +6,15 @@ import com.prj1.service.board.BoardSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("board")
@@ -103,6 +102,20 @@ public class BoardController {
 		}
 		return "redirect:/board/list";
 	}
+
+
+	// 좋아요기능
+	@PutMapping("like")
+	@ResponseBody
+	@PreAuthorize("isAuthenticated()")
+	public Map<String, Object> like(@RequestBody Map<String, String> req, Authentication authentication){
+
+
+		Map<String,String> result =  service.updateLike(req.get("boardId"),authentication.getName());
+
+		return result;
+	}
+
 }
 
 

@@ -19,8 +19,8 @@
 	<div class="row">
 		<div class="col">
 
-
-			<h1>
+			<div class="d-flex">
+			<h1 class="me-100">
 				${board.id }번 게시물
 
 				<c:url value="/board/modify" var="modifyLink">
@@ -34,7 +34,11 @@
 						</a>
 					</c:if>
 			</h1>
-
+				<h1>
+					<span id="likeButton">좋아요</span>
+					<span id="likeCount">${board.countLike}</span>
+				</h1>
+			</div>
 			<div class="mb-3">
 				<label class="form-label">
 					제목
@@ -116,7 +120,7 @@
 		</div>
 	</div>
 
-	<div class="row mt-3">
+	<div class="row mt-3 mb-3">
 		<div class="col">
 			<div class="list-group" id="replyListContainer">
 				<%-- 댓글 리스트 출력되는 곳 --%>
@@ -170,6 +174,20 @@
 <script>
 	const ctx = "${pageContext.request.contextPath}";
 	listReply();
+
+	// 좋아요 버튼 클릭
+	document.querySelector("#likeButton").addEventListener("click", function() {
+		const boardId = document.querySelector("#boardId").value;
+
+		fetch (`\${ctx}/board/like`,{
+			method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+			},
+			body: JSON.stringify({boardId})
+	});
+
+
 	// 댓글 crud 메시지 토스트
 	const toast = new bootstrap.Toast(document.querySelector("#replyMessageToast"));
 	document.querySelector("#modifyFormModalSubmitButton").addEventListener("click", function() {
@@ -214,6 +232,17 @@
 						const modifyReplyButtonId = `modifyReplyButton\${item.id}`;
 						const removeReplyButtonId = `removeReplyButton\${item.id}`;
 						// console.log(item.id);
+						const editButton = `
+				<div>
+					<button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modifyReplyFormModal" data-reply-id="\${item.id}" id="\${modifyReplyButtonId}">
+						<i class="fa-solid fa-pen"></i>
+					</button>
+					<button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#removeReplyConfirmModal" data-reply-id="\${item.id}" id="\${removeReplyButtonId}">
+						<i class="fa-solid fa-x"></i>
+					</button>
+				</div>
+
+			`
 						const replyDiv = `
 				<div class="list-group-item d-flex">
 					<div class="me-auto">
@@ -225,32 +254,28 @@
 								\${item.ago}
 							</small>
 					</div>
-					<div>
-						<button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modifyReplyFormModal" data-reply-id="\${item.id}" id="\${modifyReplyButtonId}">
-							<i class="fa-solid fa-pen"></i>
-						</button>
-						<button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#removeReplyConfirmModal" data-reply-id="\${item.id}" id="\${removeReplyButtonId}">
-							<i class="fa-solid fa-x"></i>
-						</button>
-					</div>
+					\${item.editable ? editButton : ''}
 				</div>`;
 						replyListContainer.insertAdjacentHTML("beforeend", replyDiv);
-						// 수정 폼 모달에 댓글 내용 넣기
-						document.querySelector("#" + modifyReplyButtonId)
-								.addEventListener("click", function() {
-									document.querySelector("#modifyFormModalSubmitButton").setAttribute("data-reply-id", this.dataset.replyId);
-									readReplyAndSetModalForm(this.dataset.replyId);
-								});
+
+						if (item.editable) {
+							// 수정 폼 모달에 댓글 내용 넣기
+							document.querySelector("#" + modifyReplyButtonId)
+									.addEventListener("click", function() {
+										document.querySelector("#modifyFormModalSubmitButton").setAttribute("data-reply-id", this.dataset.replyId);
+										readReplyAndSetModalForm(this.dataset.replyId);
+									});
 
 
-						// 삭제확인 버튼에 replyId 옮기기
-						document.querySelector("#" + removeReplyButtonId)
-								.addEventListener("click", function() {
-									// console.log(this.id + "번 삭제버튼 클릭됨");
-									console.log(this.dataset.replyId + "번 댓글 삭제할 예정, 모달 띄움")
-									document.querySelector("#removeConfirmModalSubmitButton").setAttribute("data-reply-id", this.dataset.replyId);
-									// removeReply(this.dataset.replyId);
-								});
+							// 삭제확인 버튼에 replyId 옮기기
+							document.querySelector("#" + removeReplyButtonId)
+									.addEventListener("click", function() {
+										// console.log(this.id + "번 삭제버튼 클릭됨");
+										console.log(this.dataset.replyId + "번 댓글 삭제할 예정, 모달 띄움")
+										document.querySelector("#removeConfirmModalSubmitButton").setAttribute("data-reply-id", this.dataset.replyId);
+										// removeReply(this.dataset.replyId);
+									});
+						}
 					}
 				});
 	}

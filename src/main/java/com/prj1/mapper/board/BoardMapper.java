@@ -25,6 +25,7 @@ public interface BoardMapper {
 
 	int deleteFileByName(int id, String fileName);
 
+	int getLikeByBoardIdAndMemberId(String boardId, String memberId);
 }
 
 

@@ -1,6 +1,8 @@
 package com.prj1.service.board;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.prj1.domain.board.BoardDto;
 import com.prj1.domain.board.PageInfo;
@@ -180,4 +182,24 @@ public class BoardSerivce {
         s3Client.deleteObject(deleteObjectRequest);
     }
 
+    public Map<String, Object> updateLike(String boardId, String memberId) {
+        Map<String, Object> map = new HashMap<>();
+
+        int cnt= boardMapper.getLikeByBoardIdAndMemberId(boardId, memberId);
+        // username 좋아요한 테이블이면 삭제
+        if(cnt==1){
+            boardMapper.deleteLike(boardId,memberId);
+            map.put("current","not liked");
+
+        } else {
+            // 없으면 추가
+            boardMapper.insertLike(boardId,memberId);
+            map.put("current","liked");
+        }
+
+        // 현재 몇개인지
+        int countAll = boardMapper.countLikeByBoardId(boardId);
+        map.put("count",countAll);
+        return map;
+    }
 }
