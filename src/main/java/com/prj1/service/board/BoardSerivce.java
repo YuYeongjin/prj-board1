@@ -110,7 +110,6 @@ public class BoardSerivce {
     }
 
     public BoardDto get(int id) {
-        // TODO Auto-generated method stub
         return boardMapper.select(id);
     }
 

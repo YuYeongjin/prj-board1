@@ -7,6 +7,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<style>
+		#color {color:red}
+	</style>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>${board.id }번 게시물</title>
@@ -20,7 +23,7 @@
 		<div class="col">
 
 			<div class="d-flex">
-			<h1 class="me-100">
+			<h1 class="me-auto">
 				${board.id }번 게시물
 
 				<c:url value="/board/modify" var="modifyLink">
@@ -35,7 +38,10 @@
 					</c:if>
 			</h1>
 				<h1>
-					<span id="likeButton">좋아요</span>
+					<span id="likeButton">
+							<i disabled id="color" id="liked" class="fa-solid fa-heart"></i>
+							<i disabled id="unLiked" class="fa-solid fa-heart"></i>
+					</span>
 					<span id="likeCount">${board.countLike}</span>
 				</h1>
 			</div>
@@ -179,13 +185,24 @@
 	document.querySelector("#likeButton").addEventListener("click", function() {
 		const boardId = document.querySelector("#boardId").value;
 
-		fetch (`\${ctx}/board/like`,{
-			method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
+		fetch(`\${ctx}/board/like`, {
+			method : "put",
+			headers : {
+				"Content-Type" : "application/json"
 			},
-			body: JSON.stringify({boardId})
+			body : JSON.stringify({boardId})
+		})
+				.then(res => res.json())
+				.then(data => {
+					if(data.current =='liked'){
+						document.querySelector("#likeButton").innerHTML = `<i id="color" class="fa-solid fa-heart"></i>`;
+					} else{
+						document.querySelector("#likeButton").innerHTML = `<i class="fa-solid fa-heart"></i>`;
+					}
+					document.querySelector("#likeCount").innerText = data.count;
+				})
 	});
+
 
 
 	// 댓글 crud 메시지 토스트

@@ -18,6 +18,7 @@ public class BoardDto {
 	private int countFile;
 	private int countLike;
 	private List<String> fileName;
+	private boolean likeClick;
 
 	public String getAgo() {
 		LocalDateTime now = LocalDateTime.now();

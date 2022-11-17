@@ -102,17 +102,13 @@ public class BoardController {
 		}
 		return "redirect:/board/list";
 	}
-
-
 	// 좋아요기능
 	@PutMapping("like")
 	@ResponseBody
 	@PreAuthorize("isAuthenticated()")
 	public Map<String, Object> like(@RequestBody Map<String, String> req, Authentication authentication){
 
-
-		Map<String,String> result =  service.updateLike(req.get("boardId"),authentication.getName());
-
+		Map<String,Object> result =  service.updateLike(req.get("boardId"),authentication.getName());
 		return result;
 	}
 
